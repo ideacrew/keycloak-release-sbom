@@ -6,6 +6,7 @@
     <packaging>jar</packaging>
     <version>0.1.0</version>
     <name>keycloak-release-sbom</name>
+    <description>Provides an SBOM for a released version of Keycloak.</description>
     <dependencies>
         <dependency>
             <groupId>org.json</groupId>
@@ -28,6 +29,7 @@
                 <version>3.13.0</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
+                    <release>16</release>
                     <source>16</source>
                     <target>16</target>
                 </configuration>
