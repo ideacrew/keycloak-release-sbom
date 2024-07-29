@@ -1,6 +1,5 @@
 package com.ideacrew.keycloak_release_sbom;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -12,13 +11,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
@@ -42,7 +37,7 @@ public class JarList {
         rootDirectory = releaseDirectory;
     }
 
-    public JarMappingOutcome findMavenPropertiesIn(Path path) throws IOException {
+    private JarMappingOutcome findMavenPropertiesIn(Path path) throws IOException {
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:META-INF/maven/**/pom.properties");
         JarFile jf = new JarFile(path.toFile());
         Stream<JarEntry> eStream = jf.stream();
@@ -93,17 +88,13 @@ public class JarList {
         return result;
     }
 
-    public void runJarEnumeration() throws IOException {
+    public List<JarMappingOutcome> runJarEnumeration() throws IOException {
         List<Path> fileList = findJars();
         List<JarMappingOutcome> jmol = new ArrayList<>();
         for (Path fp : fileList) {
             jmol.add(findMavenPropertiesIn(fp));
         }
-        for (JarMappingOutcome jmo : jmol) {
-            if (jmo.result != JarMappingResult.MAVEN_POMS) {
-                System.out.println(jmo.filePath.toString());
-            }
-        }
+        return jmol;
     }
 
     private List<Path> findJars() throws IOException {
