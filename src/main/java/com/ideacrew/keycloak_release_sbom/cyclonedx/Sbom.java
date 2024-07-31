@@ -16,13 +16,13 @@ import org.json.JSONObject;
  */
 public class Sbom {
 
-    private ComponentDefinition componentDefinition;
+    private final ComponentDefinition componentDefinition;
 
-    public Sbom(ComponentDefinition d) {
+    public Sbom(final ComponentDefinition d) {
         componentDefinition = d;
     }
 
-    public void writeSbomFor(List<JarMappingOutcome> jmol, PrintStream o) throws IOException {
+    public void writeSbomFor(final List<JarMappingOutcome> jmol, PrintStream o) throws IOException {
         JSONObject root = new JSONObject();
         JSONObject metadata = new JSONObject();
         JSONObject rootComponent = createRootComponent();

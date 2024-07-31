@@ -10,7 +10,7 @@ public class MavenJarVersion {
     public final String artifactId;
     public final String version;
 
-    public MavenJarVersion(String gId, String aId, String v) {
+    public MavenJarVersion(final String gId, final String aId, final String v) {
         groupId = gId;
         artifactId = aId;
         version = v;

@@ -22,31 +22,32 @@ import java.util.stream.Stream;
  * @author tevans
  */
 public class JarList {
-    private static String[] EXCLUDED_FILE_STRINGS = {
+
+    private static final String[] EXCLUDED_FILE_STRINGS = {
         "quarkus-run.jar",
         "transformed-bytecode.jar",
         "generated-bytecode.jar",
         "bcprov-jdk18on-1.78.1.jar"
-      };
-    
-    private static List<String> EXCLUDED_FILES = Arrays.asList(EXCLUDED_FILE_STRINGS);
+    };
+
+    private static final List<String> EXCLUDED_FILES = Arrays.asList(EXCLUDED_FILE_STRINGS);
 
     private final Path rootDirectory;
 
-    public JarList(Path releaseDirectory) {
+    public JarList(final Path releaseDirectory) {
         rootDirectory = releaseDirectory;
     }
 
-    private JarMappingOutcome findMavenPropertiesIn(Path path) throws IOException {
+    private JarMappingOutcome findMavenPropertiesIn(final Path path) throws IOException {
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:META-INF/maven/**/pom.properties");
         JarFile jf = new JarFile(path.toFile());
         Stream<JarEntry> eStream = jf.stream();
-        Stream <JarEntry> filtered = eStream.filter(je -> {
+        Stream<JarEntry> filtered = eStream.filter(je -> {
             return matcher.matches(Path.of(je.getName()));
         });
         List<JarEntry> jeList = filtered.toList();
         if (jeList.size() < 1) {
-            return resolveByName(path, jf);
+            return resolveByName(path);
         }
         List<MavenJarVersion> mjvs = new ArrayList<>();
         for (JarEntry je : jeList) {
@@ -61,8 +62,8 @@ public class JarList {
         }
         return JarMappingOutcome.MavenVersions(path, mjvs);
     }
-    
-    private JarMappingOutcome resolveByName(Path fPath, JarFile jf) throws IOException {
+
+    private JarMappingOutcome resolveByName(final Path fPath) throws IOException {
         String fName = fPath.getFileName().toString();
         if (EXCLUDED_FILES.contains(fName)) {
             return JarMappingOutcome.Excluded(fPath);
@@ -79,8 +80,8 @@ public class JarList {
         mjvs.add(new MavenJarVersion(gId, aId, vString));
         return JarMappingOutcome.MavenVersions(fPath, mjvs);
     }
-    
-    public String[] popLast(String str, String sep, String joiner) {
+
+    public String[] popLast(final String str, final String sep, final String joiner) {
         String[] result = new String[2];
         List<String> parts = Arrays.asList(str.split(sep));
         result[0] = parts.get(parts.size() - 1);
@@ -102,7 +103,7 @@ public class JarList {
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:**/*.jar");
         Files.walkFileTree(rootDirectory, new SimpleFileVisitor<Path>() {
             @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
                     throws IOException {
                 if (attrs.isRegularFile() && matcher.matches(file)) {
                     fileList.add(file.toAbsolutePath());
