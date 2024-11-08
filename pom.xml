@@ -4,7 +4,7 @@
     <groupId>com.ideacrew</groupId>
     <artifactId>keycloak-release-sbom</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <name>keycloak-release-sbom</name>
     <description>Provides an SBOM for a released version of Keycloak.</description>
     <dependencies>

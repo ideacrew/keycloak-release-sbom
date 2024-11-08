@@ -17,9 +17,15 @@ import org.json.JSONObject;
 public class Sbom {
 
     private final ComponentDefinition componentDefinition;
+    private final MavenJarVersion parentJar;
 
     public Sbom(final ComponentDefinition d) {
         componentDefinition = d;
+        parentJar = new MavenJarVersion(
+                "org.keycloak",
+                "keycloak-parent",
+                d.version
+        );
     }
 
     public void writeSbomFor(final List<JarMappingOutcome> jmol, PrintStream o) throws IOException {
@@ -43,6 +49,12 @@ public class Sbom {
                         components.put(createComponentObject(mjv, bomRef));
                     }
                 }
+                String pBomRef = getBomRef(parentJar);
+                if (!brs.contains(pBomRef)) {
+                    brs.add(pBomRef);
+                    bomRefList.put(pBomRef);
+                    components.put(createComponentObject(parentJar, pBomRef));
+                } 
             }
         }
         JSONObject mainDep = new JSONObject();
